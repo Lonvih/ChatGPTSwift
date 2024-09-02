@@ -26,7 +26,7 @@ public class ChatGPTAPI: @unchecked Sendable {
     }
 
     public let client: Client
-    private let urlString = "https://api.openai.com/v1"
+    private var urlString = "https://api.openai.com/v1"
     private let gptEncoder = GPTEncoder()
     public private(set) var historyList = [Message]()
     private let apiKey: String
@@ -41,9 +41,10 @@ public class ChatGPTAPI: @unchecked Sendable {
         .init(role: "system", content: content)
     }
     
-    public init(apiKey: String) {
+    public init(apiKey: String, proxyUrl: String? = nil) {
         self.apiKey = apiKey
         let clientTransport: ClientTransport
+        self.urlString = proxyUrl ?? self.urlString
         #if os(Linux)
         clientTransport = AsyncHTTPClientTransport()
         #else
